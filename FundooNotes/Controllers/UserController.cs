@@ -1,12 +1,39 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FundooManager.Interface;
+using FundooModels;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading.Tasks;
+
 
 namespace FundooNotes.Controllers
 {
-    public class UserController : Controller
+    public class UserController : ControllerBase
     {
-        public IActionResult Index()
+        private readonly IUserManager manager;
+        public UserController(IUserManager manager)
         {
-            return View();
+            this.manager = manager;
+        }
+        [HttpPost]
+        [Route("api/register")]
+        public async Task<IActionResult> Register([FromBody] UserModel userData)
+        {
+            try
+            {
+                var result = await this.manager.Register(userData);
+                if(result!= null)
+                {
+                    return this.Ok(new { Status = true, Message = "Register Successful", Data = result });
+                }
+                else
+                {
+                    return this.BadRequest(new { Status = false, Message = "Register Unsuccessful" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return this.NotFound(new {Status = false, ex.Message});
+            }
         }
     }
 }
