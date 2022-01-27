@@ -3,4 +3,7 @@
 bin/
 obj/
 FundooNotes.csproj/
+FundooRepositry.csproj/
+FundooModels.csproj/
+FundooManager.csproj/
 
