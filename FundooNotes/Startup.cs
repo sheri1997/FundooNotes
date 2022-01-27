@@ -1,4 +1,8 @@
+using FundooManager.Interface;
+using FundooManager.Manager;
 using FundooRepositry.Context;
+using FundooRepositry.Interface;
+using FundooRepositry.Repositry;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -26,6 +30,8 @@ namespace FundooNotes
         {
             services.AddMvc();
             services.AddDbContextPool<UserContext>(options => options.UseSqlServer(this.configuration.GetConnectionString("DbConnection")));
+            services.AddTransient<IUserRepositry, UserRepositry>();
+            services.AddTransient<IUserManager, UserManager>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -35,8 +41,13 @@ namespace FundooNotes
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseAuthentication();
+
 
             app.UseEndpoints(endpoints =>
             {
