@@ -55,17 +55,12 @@ namespace FundooRepositry.Repositry
         {
             try
             {
-                var checkUser = this.context.User.Where(x => x.Email == userLogin.Email).FirstOrDefault();
-                if (checkUser == null)
+                var checkUser = this.context.User.Where(x => x.Email == userLogin.Email && x.Password == userLogin.Password).FirstOrDefault();
+                if (checkUser != null)
                 {
-                    var result = from p in checkUser.Where(p => p.Email == userLogin.Email && p.Password == userLogin.Password)
-                                 select p.FirstOrDefault();
-                    if (result == null)
-                    {
-                        await this.context.SaveChangesAsync();
-                        return userLogin;
-                    }
-                    return null;
+                    userLogin.Password = EncodePasswordToBase64(userLogin.Password);
+                    await this.context.SaveChangesAsync();
+                    return userLogin;
                 }
                 return null;
             }

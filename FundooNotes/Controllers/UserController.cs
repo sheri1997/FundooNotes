@@ -36,7 +36,7 @@ namespace FundooNotes.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("api/login")]
         public async Task<IActionResult> Login([FromBody] UserLogin userLogin)
         {
