@@ -35,5 +35,27 @@ namespace FundooNotes.Controllers
                 return this.NotFound(new {Status = false, ex.Message});
             }
         }
+
+        [HttpGet]
+        [Route("api/login")]
+        public async Task<IActionResult> Login([FromBody] UserLogin userLogin)
+        {
+            try
+            {
+                var result = await this.manager.Login(userLogin);
+                if(result!=null)
+                {
+                    return this.Ok(new { Status = true, Message = "Login Successful", Data = result });
+                }
+                else
+                {
+                    return this.BadRequest(new { Status = false, Message = "Login UnSuccessful", Data = result });
+                }
+            }
+            catch (Exception ex)
+            {
+                return this.NotFound(new { Status = false, ex.Message });
+            }
+        }
     }
 }

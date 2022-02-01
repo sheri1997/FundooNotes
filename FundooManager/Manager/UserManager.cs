@@ -26,11 +26,16 @@ namespace FundooManager.Manager
                 throw new Exception(ex.Message);
             }
         }
-
-        public Task<UserModel> Register(UserModel userData)
+        public async Task<UserLogin> Login(UserLogin userLogin)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await this.repositry.Login(userLogin);
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }
- 

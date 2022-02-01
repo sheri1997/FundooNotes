@@ -9,5 +9,6 @@ namespace FundooManager.Interface
     public interface IUserManager
     {
         Task<UserModel> Register(UserModel userData);
+        Task<UserLogin> Login(UserLogin userLogin);
     }
 }

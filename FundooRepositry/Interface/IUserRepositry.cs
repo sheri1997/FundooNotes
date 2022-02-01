@@ -9,5 +9,6 @@ namespace FundooRepositry.Interface
     public interface IUserRepositry
     {
         Task<UserModel> Register(UserModel userData);
+        Task<UserLogin> Login(UserLogin userLogin);
     }
 }
