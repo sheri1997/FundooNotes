@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace FundooRepositry.Repositry
 {
-    public class UserRepositry:IUserRepositry
+    public class UserRepositry : IUserRepositry
     {
         private readonly UserContext context;
         private readonly IConfiguration configuration;
@@ -42,7 +42,7 @@ namespace FundooRepositry.Repositry
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.configuration["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-            var token = new JwtSecurityToken(this.configuration["Jwt:Issuer"], null, expires: DateTime.Now.AddMinutes(120),signingCredentials: credentials);
+            var token = new JwtSecurityToken(this.configuration["Jwt:Issuer"], null, expires: DateTime.Now.AddMinutes(120), signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
@@ -79,17 +79,17 @@ namespace FundooRepositry.Repositry
                 }
                 return null;
             }
-            catch(ArgumentNullException ex)
+            catch (ArgumentNullException ex)
             {
                 throw new Exception(ex.Message);
             }
         }
-        public string  forgetPassword(string email)
+        public string forgetPassword(string email)
         {
             try
             {
                 var checkUser = this.context.User.Where(x => x.Email == email).FirstOrDefault();
-                if(checkUser != null)
+                if (checkUser != null)
                 {
                     MSMQModel mSMQModel = new MSMQModel();
                     var token = JSONWebToken(email);
@@ -102,6 +102,26 @@ namespace FundooRepositry.Repositry
                 return ex.Message;
             }
         }
-
+        public bool ResetPassword(string email, string Password)
+        {
+            try
+            {
+                var checkUser = this.context.User.Where(x => x.Email == email).FirstOrDefault();
+                if(checkUser != null)
+                {
+                    checkUser.Password = Password;
+                    this.context.SaveChangesAsync();
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch(Exception)
+            {
+                return false;
+            }
+        }
     }
 }

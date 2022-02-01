@@ -1,8 +1,10 @@
 ﻿using FundooManager.Interface;
+using FundooRepositry.Repositry;
 using FundooModels;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Threading.Tasks;
 
 
@@ -81,5 +83,22 @@ namespace FundooNotes.Controllers
                 return this.NotFound(new { Status = false, ex.Message });
             }
         }
+        [HttpPut]
+        [Route("api/resetpassword")]
+        public IActionResult ResetPassword(string password)
+        {
+            try
+            {
+                var checkuser = this.User.Claims.First(p => p.Type == "Email").Value;
+                UserRepositry userRepositry = null;
+                userRepositry.ResetPassword(checkuser, password);
+                return Ok(new { Status = true, Message = "Password Reset Successfully" });
+            }
+            catch(Exception)
+            {
+                return BadRequest(new { Status = false, Message = "Password Cannot Be Changed" });
+            }
+        }
+
     }
 }
