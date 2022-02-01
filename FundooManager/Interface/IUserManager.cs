@@ -11,5 +11,6 @@ namespace FundooManager.Interface
         Task<UserModel> Register(UserModel userData);
         Task<UserLogin> Login(UserLogin userLogin);
         Task<MSMQModel> forgetPassword(MSMQModel mSMQModel);
+        
     }
 }
