@@ -2,6 +2,7 @@
 using FundooRepositry.Context;
 using FundooRepositry.Interface;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -15,10 +16,12 @@ namespace FundooRepositry.Repositry
     public class UserRepositry:IUserRepositry
     {
         private readonly UserContext context;
+        private readonly IConfiguration configuration;
 
-        public UserRepositry(UserContext context)
+        public UserRepositry(UserContext context, IConfiguration configuration)
         {
             this.context = context;
+            this.configuration = configuration;
         }
         public static string EncodePasswordToBase64(string password)
         {
@@ -36,14 +39,10 @@ namespace FundooRepositry.Repositry
         }
         private string JSONWebToken(string Email)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.context["Jwt:Key"]));
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.configuration["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-            var token = new JwtSecurityToken(this.context["Jwt:Issuer"],
-              this.context["Jwt:Issuer"],
-              null,
-              expires: DateTime.Now.AddMinutes(120),
-              signingCredentials: credentials);
+            var token = new JwtSecurityToken(this.configuration["Jwt:Issuer"], null, expires: DateTime.Now.AddMinutes(120),signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
@@ -85,5 +84,24 @@ namespace FundooRepositry.Repositry
                 throw new Exception(ex.Message);
             }
         }
+        public string  forgetPassword(string email)
+        {
+            try
+            {
+                var checkUser = this.context.User.Where(x => x.Email == email).FirstOrDefault();
+                if(checkUser != null)
+                {
+                    MSMQModel mSMQModel = new MSMQModel();
+                    var token = JSONWebToken(email);
+                    //await this.context.SaveChangesAsync();
+                    return MSMQModel.MessageS(token);
+                }
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
     }
 }
