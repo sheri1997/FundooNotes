@@ -84,17 +84,23 @@ namespace FundooRepositry.Repositry
                 throw new Exception(ex.Message);
             }
         }
-        public string forgetPassword(string email)
+        public  string forgetPassword(string email)
         {
             try
             {
-                var checkUser = this.context.User.Where(x => x.Email == email).FirstOrDefault();
+                var checkUser = context.User.FirstOrDefault(e => e.Email == email);
                 if (checkUser != null)
                 {
-                    MSMQModel mSMQModel = new MSMQModel();
+                    //MSMQModel mSMQModel = new MSMQModel();
                     var token = JSONWebToken(email);
                     //await this.context.SaveChangesAsync();
-                    return MSMQModel.MessageS(token);
+                    SMSend sMSend = new SMSend();
+                    sMSend.Sender(token);
+                    return token;
+                }
+                else
+                {
+                    return "User Not Found";
                 }
             }
             catch (Exception ex)
@@ -123,5 +129,6 @@ namespace FundooRepositry.Repositry
                 return false;
             }
         }
+
     }
 }
