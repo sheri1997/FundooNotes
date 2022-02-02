@@ -37,13 +37,24 @@ namespace FundooManager.Manager
                 throw new Exception(ex.Message);
             }
         }
-        public async Task<MSMQModel> forgetPassword(MSMQModel mSMQModel)
+        public string forgetPassword(string email)
         {
             try
             {
-                return await this.repositry.forgetPassword(mSMQModel);
+                return this.repositry.forgetPassword(email);
             }
             catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public bool ResetPassword(string email, string password)
+        {
+            try
+            {
+                return this.repositry.ResetPassword(email, password);
+            }
+            catch(Exception ex)
             {
                 throw new Exception(ex.Message);
             }

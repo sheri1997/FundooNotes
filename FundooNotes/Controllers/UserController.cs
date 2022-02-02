@@ -63,15 +63,15 @@ namespace FundooNotes.Controllers
         }
         [HttpPost]
         [Route("api/forgetpassword")]
-        public async Task<IActionResult> ForgetPassword([FromBody] MSMQModel mSMQModel)
+        public IActionResult ForgetPassword(string Email)
         {
             //var handler = new JwtSecurityTokenHandler();
             try
             {
-                var result = await this.manager.forgetPassword(mSMQModel);
+                var result = this.manager.forgetPassword(Email);
                 if (result != null)
                 {
-                    return this.Ok(new { Status = true, Message = "Password Changed Successfully", Data = result });
+                    return this.Ok(new { Status = true, Message = "Email Send Successfully" });
                 }
                 else
                 {
@@ -83,13 +83,13 @@ namespace FundooNotes.Controllers
                 return this.NotFound(new { Status = false, ex.Message });
             }
         }
-        [HttpPut]
+        [HttpPost]
         [Route("api/resetpassword")]
-        public IActionResult ResetPassword(string password)
+        public IActionResult ResetPassword(string email, string password)
         {
             try
             {
-                var checkuser = this.User.Claims.First(p => p.Type == "Email").Value;
+                var checkuser = this.User.Claims.First(p => p.Type == email).Value;
                 UserRepositry userRepositry = null;
                 userRepositry.ResetPassword(checkuser, password);
                 return Ok(new { Status = true, Message = "Password Reset Successfully" });
