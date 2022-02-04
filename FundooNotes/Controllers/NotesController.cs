@@ -97,5 +97,89 @@ namespace FundooNotes.Controllers
                 return this.NotFound(new { Status = false, ex.Message });
             }
         }
+        [HttpGet]
+        [Route("api/istrash")]
+        public IActionResult IsTrash(int NoteId)
+        {
+            try
+            {
+                var result = this.manager.IsTrash(NoteId);
+                if (result != false)
+                {
+                    return this.Ok(new { Status = true, Message = "Notes is in trash", Data = result });
+                }
+                else
+                {
+                    return this.Ok(new { Status = true, Message = "Nots is not in trash", Data = result });
+                }
+            }
+            catch (Exception ex)
+            {
+                return this.NotFound(new { Status = false, ex.Message });
+            }
+        }
+        [HttpGet]
+        [Route("api/ispin")]
+        public IActionResult IsPin(int NoteId)
+        {
+            try
+            {
+                var result = this.manager.IsPin(NoteId);
+                if (result != false)
+                {
+                    return this.Ok(new { Status = true, Message = "Notes is Pin", Data = result });
+                }
+                else
+                {
+                    return this.Ok(new { Status = true, Message = "Nots is not Pin", Data = result });
+                }
+            }
+            catch (Exception ex)
+            {
+                return this.NotFound(new { Status = false, ex.Message });
+            }
+        }
+        [HttpGet]
+        [Route("api/isarchieve")]
+        public IActionResult IsArchive(int NoteId)
+        {
+            try
+            {
+                var result = this.manager.IsArchive(NoteId);
+                if (result != false)
+                {
+                    return this.Ok(new { Status = true, Message = "Notes is Archieve", Data = result });
+                }
+                else
+                {
+                    return this.Ok(new { Status = true, Message = "Nots is not Archieve", Data = result });
+                }
+            }
+            catch (Exception ex)
+            {
+                return this.NotFound(new { Status = false, ex.Message });
+            }
+        }
+        [HttpGet]
+        [Route("api/getbyid")]
+        public IActionResult GetById(int UserId)
+        {
+            try
+            {
+                var result = this.manager.GetById(UserId);
+                if (result != null)
+                {
+                    return this.Ok(new { Status = true, Message = "Notes Retrieved Successfully", Data = result });
+                }
+                else
+                {
+                    return this.Ok(new { Status = true, Message = "Notes Not Retrieved Successfully", Data = result });
+                }
+            }
+            catch (Exception ex)
+            {
+                return this.NotFound(new { Status = false, ex.Message });
+            }
+        }
     }
 }

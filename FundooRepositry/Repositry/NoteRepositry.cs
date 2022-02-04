@@ -94,6 +94,69 @@ namespace FundooRepositry.Repositry
         {
             return this.context.Note.ToList();
         }
-        //public IEnumerable<NotesEntity> 
+        public bool IsTrash(int NoteId)
+        {
+            try
+            {
+                var checkUserID = this.context.Note.Where(x => x.Id == NoteId).FirstOrDefault();
+                if(checkUserID != null)
+                {
+                    if (checkUserID.Trash == true)
+                    {
+                        return true;
+                    }
+                    else return false;
+                }
+                return false;
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public bool IsPin(int NoteId)
+        {
+            try
+            {
+                var checkUserID = this.context.Note.Where(x => x.Id == NoteId).FirstOrDefault();
+                if (checkUserID != null)
+                {
+                    if (checkUserID.Pin == true)
+                    {
+                        return true;
+                    }
+                    else return false;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public bool IsArchive(int NoteId)
+        {
+            try
+            {
+                var checkUserID = this.context.Note.Where(x => x.Id == NoteId).FirstOrDefault();
+                if (checkUserID != null)
+                {
+                    if (checkUserID.Archive == true)
+                    {
+                        return true;
+                    }
+                    else return false;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public NotesEntity GetById(int UserId)
+        {
+            return this.context.Note.FirstOrDefault(x => x.Id == UserId);
+        }
     }
 }

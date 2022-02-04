@@ -59,5 +59,49 @@ namespace FundooManager.Manager
                 throw new Exception(ex.Message);
             }
         }
+        public bool IsTrash(int NoteId)
+        {
+            try
+            {
+                return this.repositry.IsTrash(NoteId);
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public bool IsPin(int NoteId)
+        {
+            try
+            {
+                return this.repositry.IsPin(NoteId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public bool IsArchive(int NoteId)
+        {
+            try
+            {
+                return this.repositry.IsArchive(NoteId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public NotesEntity GetById(int UserId)
+        {
+            try
+            {
+                return this.GetById(UserId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }
