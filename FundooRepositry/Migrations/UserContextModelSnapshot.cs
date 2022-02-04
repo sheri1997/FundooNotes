@@ -53,10 +53,12 @@ namespace FundooRepositry.Migrations
                     b.Property<bool>("Trash")
                         .HasColumnType("bit");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Note");
                 });
@@ -84,21 +86,16 @@ namespace FundooRepositry.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UserModel")
-                        .HasColumnType("int");
-
                     b.HasKey("UserId");
-
-                    b.HasIndex("UserModel");
 
                     b.ToTable("User");
                 });
 
-            modelBuilder.Entity("FundooModels.UserModel", b =>
+            modelBuilder.Entity("FundooModels.NotesEntity", b =>
                 {
-                    b.HasOne("FundooModels.NotesEntity", null)
-                        .WithMany("userModels")
-                        .HasForeignKey("UserModel");
+                    b.HasOne("FundooModels.UserModel", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
                 });
 #pragma warning restore 612, 618
         }

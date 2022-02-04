@@ -36,6 +36,9 @@ namespace FundooNotes
             services.AddDbContextPool<UserContext>(options => options.UseSqlServer(this.configuration.GetConnectionString("DbConnection")));
             services.AddTransient<IUserRepositry, UserRepositry>();
             services.AddTransient<IUserManager, UserManager>();
+            services.AddTransient<INoteManager, NoteManager>();
+            services.AddTransient<INoteRepositry, NoteRepositry>();
+            services.AddTransient<INoteRepositry, NoteRepositry>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Welcome to FundooNotes" });

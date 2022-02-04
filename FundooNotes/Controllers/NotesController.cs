@@ -34,14 +34,14 @@ namespace FundooNotes.Controllers
                 return this.NotFound(new { Status = false, ex.Message });
             }
         }
-        [HttpPost]
+        [HttpDelete]
         [Route("api/deletenote")]
         public IActionResult DeleteNode(int noteId)
         {
             try
             {
                 var result = this.manager.DeleteNode(noteId);
-                if (result != true)
+                if (result != 0)
                 {
                     return this.Ok(new { Status = true, Message = "Note Deleted Successfully" });
                 }
@@ -55,7 +55,7 @@ namespace FundooNotes.Controllers
                 return this.NotFound(new { Status = false, ex.Message });
             }
         }
-        [HttpPost]
+        [HttpPut]
         [Route("api/updatenote")]
         public IActionResult UpdateNotes(UpdateModel updateModel, int Id)
         {
@@ -76,14 +76,14 @@ namespace FundooNotes.Controllers
                 return this.NotFound(new { Status = false, ex.Message });
             }
         }
-        [HttpPost]
+        [HttpGet]
         [Route("api/retrievenotes")]
         public IActionResult RetriveNotes()
         {
             try
             {
                 var result = this.manager.RetriveNotes();
-                if(result == null)
+                if (result != null)
                 {
                     return this.Ok(new { Status = true, Message = "Notes Retrieved Successfully", Data = result });
                 }
@@ -92,9 +92,9 @@ namespace FundooNotes.Controllers
                     return this.BadRequest(new { Status = true, Message = "Nots Not Retrieved Successfully", Data = result });
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                return this.NotFound(new { Status = false, ex.Message});
+                return this.NotFound(new { Status = false, ex.Message });
             }
         }
     }

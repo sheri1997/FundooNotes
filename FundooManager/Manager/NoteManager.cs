@@ -26,7 +26,7 @@ namespace FundooManager.Manager
                 throw new Exception(ex.Message);
             }
         }
-        public bool DeleteNode(int noteId)
+        public int DeleteNode(int noteId)
         {
             try
             {
@@ -41,7 +41,7 @@ namespace FundooManager.Manager
         {
             try
             {
-                return this.repositry.UpdateNotes(updateModel,Id);
+                return this.repositry.UpdateNotes(updateModel, Id);
             }
             catch (Exception ex)
             {
@@ -54,7 +54,7 @@ namespace FundooManager.Manager
             {
                 return this.repositry.RetriveNotes();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
