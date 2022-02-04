@@ -10,6 +10,9 @@ namespace FundooModels
     {
         [Key]
         public int Id { get; set; }
+        
+        [ForeignKey("UserId")]
+        public virtual UserModel User { get; set; }
 
         public string Title { get; set; }
 
@@ -29,8 +32,5 @@ namespace FundooModels
         
         public DateTime Remainder { get; set; }
 
-        [ForeignKey("UserModel")]
-        public ICollection<UserModel> User { get; set; }
-        public int UserId { get; set; }
     }
 }

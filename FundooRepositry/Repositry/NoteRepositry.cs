@@ -44,18 +44,18 @@ namespace FundooRepositry.Repositry
                 throw new Exception(ex.Message);
             }
         }
-        public bool DeleteNode(int noteId)
+        public int DeleteNode(int noteId)
         {
             try
             {
-                var checkIserID = this.context.Note.Where(x => x.Id == noteId).FirstOrDefault();
+                var checkIserID = this.context.Note.FirstOrDefault(x => x.Id == noteId);
                 if (checkIserID != null)
                 {
-                    this.context.Remove(noteId);
+                    this.context.Remove(checkIserID);
                     this.context.SaveChanges();
-                    return true;
+                    return 1;
                 }
-                return false;
+                return 0;
             }
             catch (Exception ex)
             {
@@ -67,7 +67,7 @@ namespace FundooRepositry.Repositry
             try
             {
                 var checkUserID = this.context.Note.Where(x => x.Id == Id).FirstOrDefault();
-                if(checkUserID != null)
+                if (checkUserID != null)
                 {
                     checkUserID.Title = updateModel.Title;
                     checkUserID.Note = updateModel.Note;
@@ -78,7 +78,7 @@ namespace FundooRepositry.Repositry
                     checkUserID.Delete = updateModel.Delete;
                     checkUserID.Pin = updateModel.Pin;
                     checkUserID.Remainder = updateModel.Remainder;
-                    this.context.Update(updateModel);
+                    this.context.Update(checkUserID);
                     var result = this.context.SaveChanges();
                     return true;
                 }
@@ -94,5 +94,6 @@ namespace FundooRepositry.Repositry
         {
             return this.context.Note.ToList();
         }
+        //public IEnumerable<NotesEntity> 
     }
 }
