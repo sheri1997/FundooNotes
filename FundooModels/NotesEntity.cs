@@ -9,7 +9,7 @@ namespace FundooModels
     public class NotesEntity
     {
         [Key]
-        public int Id { get; set; }
+        public int NoteId { get; set; }
         
         [ForeignKey("UserId")]
         public virtual UserModel User { get; set; }

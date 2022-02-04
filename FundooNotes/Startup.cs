@@ -39,6 +39,8 @@ namespace FundooNotes
             services.AddTransient<INoteManager, NoteManager>();
             services.AddTransient<INoteRepositry, NoteRepositry>();
             services.AddTransient<INoteRepositry, NoteRepositry>();
+            services.AddTransient<ICollaboratorManager, CollaboratorManager>();
+            services.AddTransient<ICollaboratorRepositry, CollaboratorRepositry>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Welcome to FundooNotes" });

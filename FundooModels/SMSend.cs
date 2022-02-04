@@ -33,7 +33,7 @@ namespace FundooModels
             }
             catch (Exception e)
             {
-                throw;
+                throw new Exception(e.Message);
             }
 
         }
@@ -75,7 +75,7 @@ namespace FundooModels
 
             catch (Exception ex)
             {
-                throw;
+                throw new Exception(ex.Message);
             }
 
             MSMQ.BeginReceive();
