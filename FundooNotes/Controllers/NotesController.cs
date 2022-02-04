@@ -1,5 +1,6 @@
 ﻿using FundooManager.Interface;
 using FundooModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ namespace FundooNotes.Controllers
         {
             this.manager = manager;
         }
+        //[Authorize]
         [HttpPost]
         [Route("api/addnote")]
         public IActionResult AddNotes([FromBody] UpdateModel updateModel)

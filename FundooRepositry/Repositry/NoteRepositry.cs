@@ -1,6 +1,10 @@
-﻿using FundooModels;
+﻿using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
+using FundooModels;
 using FundooRepositry.Context;
 using FundooRepositry.Interface;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -19,6 +23,33 @@ namespace FundooRepositry.Repositry
         {
             this.context = context;
             this.configuration = configuration;
+        }
+        public void ImageNotes(NotesEntity imageNotes, IFormFile image, long TokenId)
+        {
+            try
+            {
+                var validUserId = this.context.User.Where(e => e.UserId == TokenId);
+                if (validUserId != null)
+                {
+
+                    Account account = new Account(this.configuration["Cloudinary:CloudName"], this.configuration["Cloudinary:APIKey"], this.configuration["Cloudinary:APISecret"]);
+                    var imagePath = image.OpenReadStream();
+                    Cloudinary cloudinary = new Cloudinary(account);
+                    ImageUploadParams imageParams = new ImageUploadParams()
+                    {
+                        File = new FileDescription(image.FileName, imagePath)
+                    };
+                    var uploadImage = cloudinary.Upload(imageParams).Url.ToString();
+                    imageNotes.Image = uploadImage;
+                    this.context.SaveChanges();
+
+
+                }
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
         public bool AddNotes(UpdateModel updateModel)
         {
@@ -48,7 +79,7 @@ namespace FundooRepositry.Repositry
         {
             try
             {
-                var checkIserID = this.context.Note.FirstOrDefault(x => x.Id == noteId);
+                var checkIserID = this.context.Note.FirstOrDefault(x => x.NoteId == noteId);
                 if (checkIserID != null)
                 {
                     this.context.Remove(checkIserID);
@@ -66,7 +97,7 @@ namespace FundooRepositry.Repositry
         {
             try
             {
-                var checkUserID = this.context.Note.Where(x => x.Id == Id).FirstOrDefault();
+                var checkUserID = this.context.Note.Where(x => x.NoteId == Id).FirstOrDefault();
                 if (checkUserID != null)
                 {
                     checkUserID.Title = updateModel.Title;
@@ -98,7 +129,7 @@ namespace FundooRepositry.Repositry
         {
             try
             {
-                var checkUserID = this.context.Note.Where(x => x.Id == NoteId).FirstOrDefault();
+                var checkUserID = this.context.Note.Where(x => x.NoteId == NoteId).FirstOrDefault();
                 if(checkUserID != null)
                 {
                     if (checkUserID.Trash == true)
@@ -118,7 +149,7 @@ namespace FundooRepositry.Repositry
         {
             try
             {
-                var checkUserID = this.context.Note.Where(x => x.Id == NoteId).FirstOrDefault();
+                var checkUserID = this.context.Note.Where(x => x.NoteId == NoteId).FirstOrDefault();
                 if (checkUserID != null)
                 {
                     if (checkUserID.Pin == true)
@@ -138,7 +169,7 @@ namespace FundooRepositry.Repositry
         {
             try
             {
-                var checkUserID = this.context.Note.Where(x => x.Id == NoteId).FirstOrDefault();
+                var checkUserID = this.context.Note.Where(x => x.NoteId == NoteId).FirstOrDefault();
                 if (checkUserID != null)
                 {
                     if (checkUserID.Archive == true)
@@ -156,7 +187,7 @@ namespace FundooRepositry.Repositry
         }
         public NotesEntity GetById(int UserId)
         {
-            return this.context.Note.FirstOrDefault(x => x.Id == UserId);
+            return this.context.Note.FirstOrDefault(x => x.NoteId == UserId);
         }
     }
 }
