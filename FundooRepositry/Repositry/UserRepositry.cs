@@ -1,7 +1,6 @@
 ﻿using FundooModels;
 using FundooRepositry.Context;
 using FundooRepositry.Interface;
-using FundooManager.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,16 +28,12 @@ namespace FundooRepositry.Repositry
                     await this.context.SaveChangesAsync();
                     return userData;
                 }
+                return null;
             }
             catch (ArgumentNullException ex)
             {
                 throw new Exception(ex.Message);
             }
-        }
-
-        public Task<UserModel> Register(UserModel userData)
-        {
-            throw new NotImplementedException();
         }
     }
 }

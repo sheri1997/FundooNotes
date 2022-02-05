@@ -26,11 +26,6 @@ namespace FundooManager.Manager
                 throw new Exception(ex.Message);
             }
         }
-
-        public Task<UserModel> Register(UserModel userData)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
  
