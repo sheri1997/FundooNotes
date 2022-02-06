@@ -10,6 +10,10 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Security.Claims;
+using Experimental.System.Messaging;
+using System.Net.Mail;
+using System.Net;
 
 namespace FundooRepositry.Repositry
 {
@@ -41,8 +45,11 @@ namespace FundooRepositry.Repositry
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.configuration["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-            var token = new JwtSecurityToken(this.configuration["Jwt:Issuer"], null, expires: DateTime.Now.AddMinutes(120), signingCredentials: credentials);
+            var claims = new[]
+            {
+                new Claim("EmailId", Email)
+            };
+            var token = new JwtSecurityToken(this.configuration["Jwt:Issuer"], Email, expires: DateTime.Now.AddMinutes(15), signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
@@ -69,7 +76,8 @@ namespace FundooRepositry.Repositry
         {
             try
             {
-                var checkUser = this.context.User.Where(x => x.Email == userLogin.Email && x.Password == userLogin.Password).FirstOrDefault();
+                var ispassword = userLogin.Password = EncodePasswordToBase64(userLogin.Password);
+                var checkUser = this.context.User.Where(x => x.Email == userLogin.Email && x.Password == ispassword).FirstOrDefault();
                 if (checkUser != null)
                 {
                     userLogin.Password = EncodePasswordToBase64(userLogin.Password);
@@ -84,28 +92,54 @@ namespace FundooRepositry.Repositry
                 throw new Exception(ex.Message);
             }
         }
-        public  string forgetPassword(string email)
+        public string forgetPassword(string email)
         {
-            try
+            var url = "Click on following link to reset the password for FundooNotes App: https://localhost:44354/User/api/ResetPassword.html";
+            MessageQueue msmqQueue = new MessageQueue();
+            if (MessageQueue.Exists(@".\Private$\MyQueue"))
             {
-                var checkUser = context.User.FirstOrDefault(e => e.Email == email);
-                if (checkUser != null)
-                {
-                    //MSMQModel mSMQModel = new MSMQModel();
-                    var token = JSONWebToken(email);
-                    //await this.context.SaveChangesAsync();
-                    SMSend sMSend = new SMSend();
-                    sMSend.Sender(token);
-                    return token;
-                }
-                else
-                {
-                    return "User Not Found";
-                }
+                msmqQueue = new MessageQueue(@".\Private$\MyQueue");
             }
-            catch (Exception ex)
+            else
             {
-                return ex.Message;
+                msmqQueue = MessageQueue.Create(@".\Private$\MyQueue");
+
+            }
+            Message message = new Message();
+            message.Formatter = new BinaryMessageFormatter();
+            message.Body = url;
+            msmqQueue.Label = "url link";
+            msmqQueue.Send(message);
+            var reciever = new MessageQueue(@".\Private$\MyQueue");
+            var recieving = reciever.Receive();
+            recieving.Formatter = new BinaryMessageFormatter();
+            string linkToBeSend = recieving.Body.ToString();
+
+            string user;
+            string mailSubject = "Link to reset your FundooNotes App Credentials";
+            var userCheck = this.context.User
+                            .SingleOrDefault(x => x.Email == email);
+            if (userCheck != null)
+            {
+                user = linkToBeSend;
+                using (MailMessage mailMessage = new MailMessage("shreeshbri@gmail.com", email))
+                {
+                    mailMessage.Subject = mailSubject;
+                    mailMessage.Body = user;
+                    mailMessage.IsBodyHtml = true;
+                    SmtpClient Smtp = new SmtpClient();
+                    Smtp.Host = "smtp.gmail.com";
+                    Smtp.EnableSsl = true;
+                    Smtp.UseDefaultCredentials = false;
+                    Smtp.Credentials = new NetworkCredential("shreeshbri@gmail.com", "S800.4910.274@");
+                    Smtp.Port = 587;
+                    Smtp.Send(mailMessage);
+                }
+                return "Mail Sent Successfully !";
+            }
+            else
+            {
+                return "Error while sending mail !";
             }
         }
         public bool ResetPassword(string email, string Password)
