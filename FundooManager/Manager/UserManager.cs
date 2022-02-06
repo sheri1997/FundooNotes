@@ -37,5 +37,27 @@ namespace FundooManager.Manager
                 throw new Exception(ex.Message);
             }
         }
+        public string forgetPassword(string email)
+        {
+            try
+            {
+                return this.repositry.forgetPassword(email);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public bool ResetPassword(string email, string password)
+        {
+            try
+            {
+                return this.repositry.ResetPassword(email, password);
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

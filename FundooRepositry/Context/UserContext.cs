@@ -13,6 +13,8 @@ namespace FundooRepositry.Context
             
         }
         public DbSet<UserModel> User { get; set; }
-
+        public DbSet<NotesEntity> Note { get; set; }
+        public DbSet<CollaboratorEntity> Collaborator { get; set; }
+        
     }
 }
