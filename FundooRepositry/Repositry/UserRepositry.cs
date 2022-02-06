@@ -4,6 +4,7 @@ using FundooRepositry.Interface;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,6 +33,19 @@ namespace FundooRepositry.Repositry
                 throw new Exception("Error in base64Encode" + ex.Message);
             }
         }
+        public static dynamic DecodePasswordFromBase64(string token)
+        {
+            try
+            {
+                var handler = new JwtSecurityTokenHandler();
+                var decodedValue = handler.ReadJwtToken(token);
+                return decodedValue;
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
         public async Task<UserModel> Register(UserModel userData)
         {
             try
@@ -55,10 +69,10 @@ namespace FundooRepositry.Repositry
         {
             try
             {
-                var checkUser = this.context.User.Where(x => x.Email == userLogin.Email && x.Password == userLogin.Password).FirstOrDefault();
+                var ispassword = userLogin.Password = EncodePasswordToBase64(userLogin.Password);
+                var checkUser = this.context.User.Where(x => x.Email == userLogin.Email && x.Password == ispassword).FirstOrDefault();
                 if (checkUser != null)
                 {
-                    userLogin.Password = EncodePasswordToBase64(userLogin.Password);
                     await this.context.SaveChangesAsync();
                     return userLogin;
                 }
