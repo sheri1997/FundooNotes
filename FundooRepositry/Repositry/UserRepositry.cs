@@ -2,6 +2,7 @@
 using FundooRepositry.Context;
 using FundooRepositry.Interface;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -15,10 +16,12 @@ namespace FundooRepositry.Repositry
     public class UserRepositry:IUserRepositry
     {
         private readonly UserContext context;
+        private readonly IConfiguration configuration;
 
-        public UserRepositry(UserContext context)
+        public UserRepositry(UserContext context, IConfiguration configuration)
         {
             this.context = context;
+            this.configuration = configuration;
         }
         public static string EncodePasswordToBase64(string password)
         {
@@ -36,11 +39,11 @@ namespace FundooRepositry.Repositry
         }
         private string JSONWebToken(string Email)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.context["Jwt:Key"]));
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.configuration["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-            var token = new JwtSecurityToken(this.context["Jwt:Issuer"],
-              this.context["Jwt:Issuer"],
+            var token = new JwtSecurityToken(this.configuration["Jwt:Issuer"],
+              this.configuration["Jwt:Issuer"],
               null,
               expires: DateTime.Now.AddMinutes(120),
               signingCredentials: credentials);
@@ -70,7 +73,8 @@ namespace FundooRepositry.Repositry
         {
             try
             {
-                var checkUser = this.context.User.Where(x => x.Email == userLogin.Email && x.Password == userLogin.Password).FirstOrDefault();
+                var ispassword = userLogin.Password = EncodePasswordToBase64(userLogin.Password);
+                var checkUser = this.context.User.Where(x => x.Email == userLogin.Email && x.Password == ispassword).FirstOrDefault();
                 if (checkUser != null)
                 {
                     userLogin.Password = EncodePasswordToBase64(userLogin.Password);
