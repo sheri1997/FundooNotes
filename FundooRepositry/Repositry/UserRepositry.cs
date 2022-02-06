@@ -37,6 +37,18 @@ namespace FundooRepositry.Repositry
                 throw new Exception("Error in base64Encode" + ex.Message);
             }
         }
+        public static dynamic DecodePasswordFromBase64(string token)
+        {
+            try
+            {
+                var handler = new JwtSecurityTokenHandler();
+                var decodedValue = handler.ReadJwtToken(token);
+                return decodedValue;
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         private string JSONWebToken(string Email)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.configuration["Jwt:Key"]));
@@ -69,7 +81,8 @@ namespace FundooRepositry.Repositry
         {
             try
             {
-                var checkUser = this.context.User.Where(x => x.Email == userLogin.Email && x.Password == userLogin.Password).FirstOrDefault();
+                var ispassword = userLogin.Password = EncodePasswordToBase64(userLogin.Password);
+                var checkUser = this.context.User.Where(x => x.Email == userLogin.Email && x.Password == ispassword).FirstOrDefault();
                 if (checkUser != null)
                 {
                     userLogin.Password = EncodePasswordToBase64(userLogin.Password);
