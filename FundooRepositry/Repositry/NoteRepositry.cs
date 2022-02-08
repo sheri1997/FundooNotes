@@ -24,6 +24,13 @@ namespace FundooRepositry.Repositry
             this.context = context;
             this.configuration = configuration;
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="imageNotes"></param>
+        /// <param name="image"></param>
+        /// <param name="TokenId"></param>
+        /// <exception cref="Exception"></exception>
         public void ImageNotes(NotesEntity imageNotes, IFormFile image, long TokenId)
         {
             try

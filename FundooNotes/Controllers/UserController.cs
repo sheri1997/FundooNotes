@@ -6,7 +6,7 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
-
+using Microsoft.AspNetCore.Authorization;
 
 namespace FundooNotes.Controllers
 {
@@ -83,15 +83,15 @@ namespace FundooNotes.Controllers
                 return this.NotFound(new { Status = false, ex.Message });
             }
         }
+        [Authorize]
         [HttpPost]
         [Route("api/resetpassword")]
-        public IActionResult ResetPassword(string email, string password)
+        public IActionResult ResetPassword(string password)
         {
             try
             {
-                var checkuser = this.User.Claims.First(p => p.Type == email).Value;
-                UserRepositry userRepositry = null;
-                userRepositry.ResetPassword(checkuser, password);
+                var checkuser = this.User.Claims.First(p => p.Type == "Email").Value;
+                var result = this.manager.ResetPassword(checkuser, password);
                 return Ok(new { Status = true, Message = "Password Reset Successfully" });
             }
             catch(Exception)
@@ -99,6 +99,5 @@ namespace FundooNotes.Controllers
                 return BadRequest(new { Status = false, Message = "Password Cannot Be Changed" });
             }
         }
-
     }
 }

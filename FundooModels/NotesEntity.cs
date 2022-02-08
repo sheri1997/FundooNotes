@@ -32,5 +32,7 @@ namespace FundooModels
         
         public DateTime Remainder { get; set; }
 
+        public virtual ICollection<LabelEntity> Lable { get; set; }
+
     }
 }

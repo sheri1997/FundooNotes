@@ -48,11 +48,11 @@ namespace FundooManager.Manager
                 throw new Exception(ex.Message);
             }
         }
-        public bool ResetPassword(string email, string password)
+        public bool ResetPassword(string email, string Password)
         {
             try
             {
-                return this.repositry.ResetPassword(email, password);
+                return this.repositry.ResetPassword(email, Password);
             }
             catch(Exception ex)
             {
