@@ -6,21 +6,19 @@ using System.Text;
 
 namespace FundooModels
 {
-    public class CollaboratorEntity
+    public class LabelEntity
     {
         [Key]
-        public int CollabId { get; set; }
+        public int LabelId { get; set; }
 
         [ForeignKey("NoteId")]
         public virtual NotesEntity Note { get; set; }
+
 
         [ForeignKey("UserId")]
         public virtual UserModel User { get; set; }
 
         [Required]
-        public string SenderEmail { get; set; }
-
-        [Required]
-        public string RecieverEmail { get; set; }
+        public string LabelName { get; set; }
     }
 }

@@ -100,16 +100,16 @@ namespace FundooNotes
 
             app.UseRouting();
 
-            app.UseAuthentication();
-
-            app.UseAuthorization();
+           
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Fundoo");
             });
+            app.UseAuthentication();
 
+            app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

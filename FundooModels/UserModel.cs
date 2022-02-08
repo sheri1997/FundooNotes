@@ -30,5 +30,8 @@ namespace FundooModels
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
+        public ICollection<LabelEntity> Lable { get; set; }
+
+
     }
 }

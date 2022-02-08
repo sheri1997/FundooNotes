@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FundooRepositry.Migrations
 {
     [DbContext(typeof(UserContext))]
-    [Migration("20220204142446_CollaboratorEntity")]
-    partial class CollaboratorEntity
+    [Migration("20220207142909_NotesEntity")]
+    partial class NotesEntity
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -28,12 +28,16 @@ namespace FundooRepositry.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Email")
+                    b.Property<int?>("NoteId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RecieverEmail")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("NoteId")
-                        .HasColumnType("int");
+                    b.Property<string>("SenderEmail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("UserId")
                         .HasColumnType("int");
@@ -45,6 +49,32 @@ namespace FundooRepositry.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Collaborator");
+                });
+
+            modelBuilder.Entity("FundooModels.LabelEntity", b =>
+                {
+                    b.Property<int>("LabelId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("LabelName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("NoteId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("LabelId");
+
+                    b.HasIndex("NoteId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Label");
                 });
 
             modelBuilder.Entity("FundooModels.NotesEntity", b =>
@@ -127,6 +157,17 @@ namespace FundooRepositry.Migrations
 
                     b.HasOne("FundooModels.UserModel", "User")
                         .WithMany()
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("FundooModels.LabelEntity", b =>
+                {
+                    b.HasOne("FundooModels.NotesEntity", "Note")
+                        .WithMany("Lable")
+                        .HasForeignKey("NoteId");
+
+                    b.HasOne("FundooModels.UserModel", "User")
+                        .WithMany("Lable")
                         .HasForeignKey("UserId");
                 });
 

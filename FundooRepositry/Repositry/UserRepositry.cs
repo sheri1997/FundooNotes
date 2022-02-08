@@ -55,15 +55,16 @@ namespace FundooRepositry.Repositry
             }
         private string JSONWebToken(string Email)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.configuration["Jwt:Key"]));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-            var claims = new[]
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(configuration["Jwt:key"]);
+            var tokenDescriptor = new SecurityTokenDescriptor
             {
-                new Claim("EmailId", Email)
+                Subject = new ClaimsIdentity(new[] { new Claim("Email", Email) }),
+                Expires = DateTime.UtcNow.AddHours(1),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
-            var token = new JwtSecurityToken(this.configuration["Jwt:Issuer"], Email, expires: DateTime.Now.AddMinutes(15), signingCredentials: credentials);
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
         }
         public async Task<UserModel> Register(UserModel userData)
         {
@@ -106,7 +107,7 @@ namespace FundooRepositry.Repositry
         }
         public string forgetPassword(string email)
         {
-            var url = "Click on following link to reset the password for FundooNotes App: https://localhost:44354/User/api/ResetPassword.html";
+            var url = "Click on following link to reset the password for FundooNotes App:";
             MessageQueue msmqQueue = new MessageQueue();
             if (MessageQueue.Exists(@".\Private$\MyQueue"))
             {
@@ -133,11 +134,12 @@ namespace FundooRepositry.Repositry
                             .SingleOrDefault(x => x.Email == email);
             if (userCheck != null)
             {
+                string Token = JSONWebToken(userCheck.Email);
                 user = linkToBeSend;
                 using (MailMessage mailMessage = new MailMessage("shreeshbri@gmail.com", email))
                 {
                     mailMessage.Subject = mailSubject;
-                    mailMessage.Body = user;
+                    mailMessage.Body = Token;
                     mailMessage.IsBodyHtml = true;
                     SmtpClient Smtp = new SmtpClient();
                     Smtp.Host = "smtp.gmail.com";
@@ -162,6 +164,7 @@ namespace FundooRepositry.Repositry
                 if(checkUser != null)
                 {
                     checkUser.Password = Password;
+                    checkUser.Password = EncodePasswordToBase64(checkUser.Password);
                     this.context.SaveChangesAsync();
                     return true;
                 }
