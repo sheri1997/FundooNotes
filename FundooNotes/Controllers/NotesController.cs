@@ -7,6 +7,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -206,7 +207,7 @@ namespace FundooNotes.Controllers
             }
             else
             {
-                NotesList = await this.manager.RetriveNotes.ToListAsync();
+                NotesList = await this.manager.RetriveNotes().ToListAsync();
                 serializedNotesList = JsonConvert.SerializeObject(NotesList);
                 redisNotesList = Encoding.UTF8.GetBytes(serializedNotesList);
                 var options = new DistributedCacheEntryOptions()
